@@ -99,7 +99,11 @@ abstract class PHPParser_PrettyPrinterAbstract
      *
      * @return string Pretty printed statements
      */
-    protected function pStmts(array $nodes, $indent = true) {
+    protected function pStmts($nodes, $indent = true) {
+        if (!$nodes instanceof Traversable && !is_array($nodes)) {
+            throw new InvalidArgumentException('$nodes must be a Traversable, or an array.');
+        }
+
         $pNodes = array();
         foreach ($nodes as $node) {
             $pNodes[] = ((null !== $docComment = $node->getDocComment())
