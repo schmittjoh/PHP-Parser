@@ -22,7 +22,8 @@ class PHPParser_NodeVisitor_NameResolver extends PHPParser_NodeVisitorAbstract
             $this->namespace = $node->name;
             $this->aliases   = array();
         } elseif ($node instanceof PHPParser_Node_Stmt_UseUse) {
-            if (isset($this->aliases[$node->alias])) {
+            $aliasName = strtolower($node->alias);
+            if (isset($this->aliases[$aliasName])) {
                 throw new PHPParser_Error(
                     sprintf(
                         'Cannot use "%s" as "%s" because the name is already in use',
@@ -32,7 +33,7 @@ class PHPParser_NodeVisitor_NameResolver extends PHPParser_NodeVisitorAbstract
                 );
             }
 
-            $this->aliases[$node->alias] = $node->name;
+            $this->aliases[$aliasName] = $node->name;
         } elseif ($node instanceof PHPParser_Node_Stmt_Class) {
             if (null !== $node->extends) {
                 $node->extends = $this->resolveClassName($node->extends);
@@ -99,14 +100,15 @@ class PHPParser_NodeVisitor_NameResolver extends PHPParser_NodeVisitorAbstract
         $origName = clone $name;
 
         // resolve aliases (for non-relative names)
-        if (!$name->isRelative() && isset($this->aliases[$name->getFirst()])) {
-            $name->setFirst($this->aliases[$name->getFirst()]);
+        $aliasName = strtolower($name->getFirst());
+        if (!$name->isRelative() && isset($this->aliases[$aliasName])) {
+            $name->setFirst($this->aliases[$aliasName]);
         // if no alias exists prepend current namespace
         } elseif (null !== $this->namespace) {
             $name->prepend($this->namespace);
         }
 
-        $fqn = new PHPParser_Node_Name_FullyQualified($name->parts, $name->getLine());
+        $fqn = new PHPParser_Node_Name_FullyQualified($name->parts, $name->getAttributes());
         $fqn->setAttribute('original_name', $origName);
 
         return $fqn;
@@ -122,14 +124,15 @@ class PHPParser_NodeVisitor_NameResolver extends PHPParser_NodeVisitorAbstract
         $origName = clone $name;
 
         // resolve aliases for qualified names
-        if ($name->isQualified() && isset($this->aliases[$name->getFirst()])) {
-            $name->setFirst($this->aliases[$name->getFirst()]);
+        $aliasName = strtolower($name->getFirst());
+        if ($name->isQualified() && isset($this->aliases[$aliasName])) {
+            $name->setFirst($this->aliases[$aliasName]);
         // prepend namespace for relative names
         } elseif (null !== $this->namespace) {
             $name->prepend($this->namespace);
         }
 
-        $fqn = new PHPParser_Node_Name_FullyQualified($name->parts, $name->getLine());
+        $fqn = new PHPParser_Node_Name_FullyQualified($name->parts, $name->getAttributes());
         $fqn->setAttribute('original_name', $origName);
 
         return $fqn;
@@ -140,7 +143,7 @@ class PHPParser_NodeVisitor_NameResolver extends PHPParser_NodeVisitorAbstract
             $node->namespacedName = clone $this->namespace;
             $node->namespacedName->append($node->name);
         } else {
-            $node->namespacedName = new PHPParser_Node_Name($node->name, $node->getLine());
+            $node->namespacedName = new PHPParser_Node_Name($node->name, $node->getAttributes());
         }
     }
 }

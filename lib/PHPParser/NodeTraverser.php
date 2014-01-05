@@ -1,6 +1,6 @@
 <?php
 
-class PHPParser_NodeTraverser
+class PHPParser_NodeTraverser implements PHPParser_NodeTraverserInterface
 {
     /**
      * @var PHPParser_NodeVisitor[] Visitors
@@ -21,6 +21,20 @@ class PHPParser_NodeTraverser
      */
     public function addVisitor(PHPParser_NodeVisitor $visitor) {
         $this->visitors[] = $visitor;
+    }
+
+    /**
+     * Removes an added visitor.
+     *
+     * @param PHPParser_NodeVisitor $visitor
+     */
+    public function removeVisitor(PHPParser_NodeVisitor $visitor) {
+        foreach ($this->visitors as $index => $storedVisitor) {
+            if ($storedVisitor === $visitor) {
+                unset($this->visitors[$index]);
+                break;
+            }
+        }
     }
 
     /**

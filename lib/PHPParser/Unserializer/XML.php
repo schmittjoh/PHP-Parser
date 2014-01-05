@@ -30,6 +30,8 @@ class PHPParser_Unserializer_XML implements PHPParser_Unserializer
                 return $this->readNode();
             } elseif ('scalar' === $this->reader->prefix) {
                 return $this->readScalar();
+            } elseif ('comment' === $this->reader->name) {
+                return $this->readComment();
             } else {
                 throw new DomainException(sprintf('Unexpected node of type "%s"', $this->reader->name));
             }
@@ -53,28 +55,27 @@ class PHPParser_Unserializer_XML implements PHPParser_Unserializer
             )
         );
 
-        $line = $this->reader->getAttribute('line');
-        $node->setLine(null !== $line ? $line : -1);
-
-        $docComment = $this->reader->getAttribute('docComment');
-        $node->setDocComment($docComment);
-
         $depthLimit = $this->reader->depth;
         while ($this->reader->read() && $depthLimit < $this->reader->depth) {
             if (XMLReader::ELEMENT !== $this->reader->nodeType) {
                 continue;
             }
 
-            if ('subNode' !== $this->reader->prefix) {
+            $type = $this->reader->prefix;
+            if ('subNode' !== $type && 'attribute' !== $type) {
                 throw new DomainException(
-                    sprintf('Expected sub node, got node of type "%s"', $this->reader->name)
+                    sprintf('Expected sub node or attribute, got node of type "%s"', $this->reader->name)
                 );
             }
 
-            $subNodeName = $this->reader->localName;
-            $subNodeContent = $this->read($this->reader->depth);
+            $name = $this->reader->localName;
+            $value = $this->read($this->reader->depth);
 
-            $node->$subNodeName = $subNodeContent;
+            if ('subNode' === $type) {
+                $node->$name = $value;
+            } else {
+                $node->setAttribute($name, $value);
+            }
         }
 
         return $node;
@@ -117,5 +118,16 @@ class PHPParser_Unserializer_XML implements PHPParser_Unserializer
             default:
                 throw new DomainException(sprintf('Unknown scalar type "%s"', $name));
         }
+    }
+
+    protected function readComment() {
+        $className = $this->reader->getAttribute('isDocComment') === 'true'
+            ? 'PHPParser_Comment_Doc'
+            : 'PHPParser_Comment'
+        ;
+        return new $className(
+            $this->reader->readString(),
+            $this->reader->getAttribute('line')
+        );
     }
 }

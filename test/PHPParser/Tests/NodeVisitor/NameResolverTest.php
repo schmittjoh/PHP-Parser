@@ -73,12 +73,12 @@ namespace {
 }
 EOC;
 
-        $parser        = new PHPParser_Parser;
-        $prettyPrinter = new PHPParser_PrettyPrinter_Zend;
+        $parser        = new PHPParser_Parser(new PHPParser_Lexer_Emulative);
+        $prettyPrinter = new PHPParser_PrettyPrinter_Default;
         $traverser     = new PHPParser_NodeTraverser;
         $traverser->addVisitor(new PHPParser_NodeVisitor_NameResolver);
 
-        $stmts = $parser->parse(new PHPParser_Lexer_Emulative($code));
+        $stmts = $parser->parse($code);
         $stmts = $traverser->traverse($stmts);
 
         $this->assertEquals($expectedCode, $prettyPrinter->prettyPrint($stmts));
@@ -101,18 +101,18 @@ class A extends Baz { }
 EOC;
 
         $expectedCode = <<<EOC
-namespace Foo {
-    class A
-    {
-        
-    }
+namespace Foo;
+
+class A
+{
+    
 }
-namespace Bar {
-    use Foo\A as Baz;
-    class A extends Baz
-    {
-        
-    }
+namespace Bar;
+
+use Foo\A as Baz;
+class A extends Baz
+{
+    
 }
 EOC;
 
@@ -134,51 +134,62 @@ EOC;
     public function testResolveLocations() {
         $code = <<<EOC
 <?php
-namespace NS {
-    class A extends B implements C {
-        use A;
-    }
+namespace NS;
 
-    interface A extends C {
-        public function a(A \$a);
-    }
+class A extends B implements C {
+    use A;
+}
 
-    A::b();
-    A::\$b;
-    A::B;
-    new A;
-    \$a instanceof A;
+interface A extends C {
+    public function a(A \$a);
+}
 
-    namespace\a();
-    namespace\A;
+A::b();
+A::\$b;
+A::B;
+new A;
+\$a instanceof A;
+
+namespace\a();
+namespace\A;
+
+try {
+    \$someThing;
+} catch (A \$a) {
+    \$someThingElse;
 }
 EOC;
         $expectedCode = <<<EOC
-namespace NS {
-    class A extends \\NS\\B implements \\NS\\C
-    {
-        use \\NS\\A;
-    }
-    interface A extends \\NS\\C
-    {
-        public function a(\\NS\\A \$a);
-    }
-    \\NS\\A::b();
-    \\NS\\A::\$b;
-    \\NS\\A::B;
-    new \\NS\\A();
-    \$a instanceof \\NS\\A;
-    \\NS\\a();
-    \\NS\\A;
+namespace NS;
+
+class A extends \\NS\\B implements \\NS\\C
+{
+    use \\NS\\A;
+}
+interface A extends \\NS\\C
+{
+    public function a(\\NS\\A \$a);
+}
+\\NS\\A::b();
+\\NS\\A::\$b;
+\\NS\\A::B;
+new \\NS\\A();
+\$a instanceof \\NS\\A;
+\\NS\\a();
+\\NS\\A;
+try {
+    \$someThing;
+} catch (\\NS\\A \$a) {
+    \$someThingElse;
 }
 EOC;
 
-        $parser        = new PHPParser_Parser;
-        $prettyPrinter = new PHPParser_PrettyPrinter_Zend;
+        $parser        = new PHPParser_Parser(new PHPParser_Lexer_Emulative);
+        $prettyPrinter = new PHPParser_PrettyPrinter_Default;
         $traverser     = new PHPParser_NodeTraverser;
         $traverser->addVisitor(new PHPParser_NodeVisitor_NameResolver);
 
-        $stmts = $parser->parse(new PHPParser_Lexer_Emulative($code));
+        $stmts = $parser->parse($code);
         $stmts = $traverser->traverse($stmts);
 
         $this->assertEquals($expectedCode, $prettyPrinter->prettyPrint($stmts));
@@ -246,13 +257,34 @@ EOC;
     public function testAlreadyInUseError() {
         $stmts = array(
             new PHPParser_Node_Stmt_Use(array(
-                new PHPParser_Node_Stmt_UseUse(new PHPParser_Node_Name('A\B'), 'B', 1),
-                new PHPParser_Node_Stmt_UseUse(new PHPParser_Node_Name('C'),   'B', 2),
+                new PHPParser_Node_Stmt_UseUse(new PHPParser_Node_Name('A\B'), 'B', array('startLine' => 1)),
+                new PHPParser_Node_Stmt_UseUse(new PHPParser_Node_Name('C'),   'B', array('startLine' => 2)),
             ))
         );
 
         $traverser = new PHPParser_NodeTraverser;
         $traverser->addVisitor(new PHPParser_NodeVisitor_NameResolver);
         $traverser->traverse($stmts);
+    }
+
+    public function testClassNameIsCaseInsensitive()
+    {
+        $source = <<<EOC
+<?php
+namespace Foo;
+use Bar\\Baz;
+\$test = new baz();
+EOC;
+
+        $parser = new PHPParser_Parser(new PHPParser_Lexer_Emulative);
+        $stmts = $parser->parse($source);
+
+        $traverser = new PHPParser_NodeTraverser;
+        $traverser->addVisitor(new PHPParser_NodeVisitor_NameResolver);
+
+        $stmts = $traverser->traverse($stmts);
+        $stmt = $stmts[0];
+
+        $this->assertEquals(array('Bar', 'Baz'), $stmt->stmts[1]->expr->class->parts);
     }
 }

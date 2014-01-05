@@ -3,14 +3,21 @@
 class PHPParser_Tests_NodeAbstractTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruct() {
+        $attributes = array(
+            'startLine' => 10,
+            'comments'  => array(
+                new PHPParser_Comment('// Comment' . "\n"),
+                new PHPParser_Comment_Doc('/** doc comment */'),
+            ),
+        );
+
         $node = $this->getMockForAbstractClass(
             'PHPParser_NodeAbstract',
             array(
                 array(
                     'subNode' => 'value'
                 ),
-                10,
-                '/** doc comment */'
+                $attributes
             ),
             'PHPParser_Node_Dummy'
         );
@@ -21,9 +28,20 @@ class PHPParser_Tests_NodeAbstractTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('/** doc comment */', $node->getDocComment());
         $this->assertEquals('value', $node->subNode);
         $this->assertTrue(isset($node->subNode));
-        $this->assertEmpty($node->getAttributes());
+        $this->assertEquals($attributes, $node->getAttributes());
 
         return $node;
+    }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testGetDocComment(PHPParser_Node $node) {
+        $this->assertEquals('/** doc comment */', $node->getDocComment());
+        array_pop($node->getAttribute('comments')); // remove doc comment
+        $this->assertNull($node->getDocComment());
+        array_pop($node->getAttribute('comments')); // remove comment
+        $this->assertNull($node->getDocComment());
     }
 
     /**
@@ -33,10 +51,6 @@ class PHPParser_Tests_NodeAbstractTest extends PHPUnit_Framework_TestCase
         // change of line
         $node->setLine(15);
         $this->assertEquals(15, $node->getLine());
-
-        // change of doc comment
-        $node->setDocComment('/** other doc comment */');
-        $this->assertEquals('/** other doc comment */', $node->getDocComment());
 
         // direct modification
         $node->subNode = 'newValue';
@@ -52,10 +66,10 @@ class PHPParser_Tests_NodeAbstractTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(isset($node->subNode));
     }
 
-    /**
-     * @depends testConstruct
-     */
-    public function testAttributes(PHPParser_NodeAbstract $node) {
+    public function testAttributes() {
+        /** @var $node PHPParser_Node */
+        $node = $this->getMockForAbstractClass('PHPParser_NodeAbstract');
+
         $this->assertEmpty($node->getAttributes());
 
         $node->setAttribute('key', 'value');
@@ -73,7 +87,7 @@ class PHPParser_Tests_NodeAbstractTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             array(
-                'key' => 'value',
+                'key'  => 'value',
                 'null' => null,
             ),
             $node->getAttributes()
