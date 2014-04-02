@@ -96,6 +96,11 @@ class PHPParser_Lexer
                 } elseif (!isset(self::$dropTokens[$token[0]])) {
                     $value = $token[1];
                     $line  = $token[2];
+
+                    if ( ! isset(self::$tokenMap[$token[0]])) {
+                        throw new \PHPParser_Error('Lexing Error on Token: '.var_export($token, true), $line);
+                    }
+
                     return self::$tokenMap[$token[0]];
                 }
             }
