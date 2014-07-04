@@ -91,7 +91,7 @@ class PHPParser_Lexer
             } else {
                 $this->line += substr_count($token[1], "\n");
 
-                if (T_DOC_COMMENT === $token[0]) {
+                if (T_DOC_COMMENT === $token[0] || (T_COMMENT === $token[0] && substr($token[1], 0, 2) === '/*')) {
                     $docComment = $token[1];
                 } elseif (!isset(self::$dropTokens[$token[0]])) {
                     $value = $token[1];
