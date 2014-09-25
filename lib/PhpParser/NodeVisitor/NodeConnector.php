@@ -18,7 +18,7 @@ class NodeConnector extends NodeVisitorAbstract
             if ($subNode instanceof Node) {
                 $subNodes[] = $subNode;
                 continue;
-            } else if (!is_array($subNode)) {
+            } else if ( ! is_array($subNode)) {
                 continue;
             }
 
@@ -26,7 +26,7 @@ class NodeConnector extends NodeVisitorAbstract
         }
 
         for ($i=0,$c=count($subNodes); $i<$c; $i++) {
-            if (!$subNodes[$i] instanceof Node) {
+            if ( ! $subNodes[$i] instanceof Node) {
                 continue;
             }
 

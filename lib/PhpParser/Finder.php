@@ -37,7 +37,7 @@ class Finder
 	}
 
 	private function parseExpr($expr) {
-		$class = 'PHPParser_Node_';
+		$class = 'PhpParser\\Node\\';
 
 		$block = 'class';
 		$attributes = array();

@@ -27,11 +27,11 @@ class Param extends NodeAbstract
     public function __construct($name, $default = null, $type = null, $byRef = false, $variadic = false, array $attributes = array()) {
         parent::__construct(
             array(
+                'default'  => $default,
                 'type'     => $type,
                 'byRef'    => $byRef,
                 'variadic' => $variadic,
                 'name'     => $name,
-                'default'  => $default,
             ),
             $attributes
         );

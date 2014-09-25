@@ -27,11 +27,11 @@ class Foreach_ extends Node\Stmt
     public function __construct(Node\Expr $expr, Node\Expr $valueVar, array $subNodes = array(), array $attributes = array()) {
         parent::__construct(
             array(
+                'stmts'    => isset($subNodes['stmts'])  ? $subNodes['stmts']  : array(),
                 'expr'     => $expr,
                 'keyVar'   => isset($subNodes['keyVar']) ? $subNodes['keyVar'] : null,
                 'byRef'    => isset($subNodes['byRef'])  ? $subNodes['byRef']  : false,
                 'valueVar' => $valueVar,
-                'stmts'    => isset($subNodes['stmts'])  ? $subNodes['stmts']  : array(),
             ),
             $attributes
         );

@@ -26,10 +26,10 @@ class If_ extends Node\Stmt
     public function __construct(Node\Expr $cond, array $subNodes = array(), array $attributes = array()) {
         parent::__construct(
             array(
-                'cond'    => $cond,
                 'stmts'   => isset($subNodes['stmts'])   ? $subNodes['stmts']   : array(),
                 'elseifs' => isset($subNodes['elseifs']) ? $subNodes['elseifs'] : array(),
                 'else'    => isset($subNodes['else'])    ? $subNodes['else']    : null,
+                'cond'    => $cond,
             ),
             $attributes
         );
