@@ -1,6 +1,11 @@
 <?php
 
-class PHPParser_NodeVisitor_Matcher extends PHPParser_NodeVisitorAbstract
+namespace PhpParser\NodeVisitor;
+
+use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
+
+class Matcher extends NodeVisitorAbstract
 {
 	private $class;
 	private $attributes;
@@ -11,7 +16,7 @@ class PHPParser_NodeVisitor_Matcher extends PHPParser_NodeVisitorAbstract
 		$this->attributes = $attributes;
 	}
 
-	public function enterNode(PHPParser_Node $node) {
+	public function enterNode(Node $node) {
 		if (!$node instanceof $this->class) {
 			return;
 		}

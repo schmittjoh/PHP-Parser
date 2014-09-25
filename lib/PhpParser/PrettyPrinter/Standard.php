@@ -15,6 +15,13 @@ use PhpParser\Node\Name;
 
 class Standard extends PrettyPrinterAbstract
 {
+    private $preserveOriginalNames = false;
+
+    public function setPreserveOriginalNames($bool)
+    {
+        $this->preserveOriginalNames = (boolean) $bool;
+    }
+
     // Special nodes
 
     public function pParam(Node\Param $node) {
@@ -40,6 +47,12 @@ class Standard extends PrettyPrinterAbstract
     }
 
     public function pName_FullyQualified(Name\FullyQualified $node) {
+        // Print out the name that was originally present in the source document
+        // if we replaced it during parsing.
+        if ($this->preserveOriginalNames && null !== $origName = $node->getAttribute('original_name')) {
+            return $this->p($origName);
+        }
+
         return '\\' . implode('\\', $node->parts);
     }
 

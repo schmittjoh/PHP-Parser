@@ -1,11 +1,14 @@
 <?php
 
+namespace PhpParser;
+use PhpParser\NodeVisitor\Matcher;
+
 /**
  * Searches through the AST to find a node with the given specifications.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class PHPParser_Finder
+class Finder
 {
 	private $ast;
 
@@ -17,10 +20,10 @@ class PHPParser_Finder
 		$this->ast = $ast;
 	}
 
-	public function find($expr, PHPParser_Node $relativeNode = null) {
+	public function find($expr, Node $relativeNode = null) {
 		$visitor = $this->createVisitor($expr);
 
-		$traverser = new PHPParser_NodeTraverser();
+		$traverser = new NodeTraverser();
 		$traverser->addVisitor($visitor);
 		$traverser->traverse(null === $relativeNode ? $this->ast : array($relativeNode));
 
@@ -30,7 +33,7 @@ class PHPParser_Finder
 	private function createVisitor($expr) {
 		$attr = $this->parseExpr($expr);
 
-		return new PHPParser_NodeVisitor_Matcher($attr['class'], $attr);
+		return new Matcher($attr['class'], $attr);
 	}
 
 	private function parseExpr($expr) {

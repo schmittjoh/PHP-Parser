@@ -1,5 +1,7 @@
 <?php
 
+namespace PhpParser;
+
 /**
  * Alternative Implementation to the default NodeTraverser.
  *
@@ -10,16 +12,16 @@
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class PHPParser_CallbackNodeTraverser
+class CallbackNodeTraverser
 {
     private $callback;
 
-    public static function traverseWithCallback(array $nodes, PHPParser_NodeTraversalCallback $callback) {
+    public static function traverseWithCallback(array $nodes, NodeTraversalCallback $callback) {
         $traverser = new self($callback);
         $traverser->traverse($nodes);
     }
 
-    public function __construct(PHPParser_NodeTraversalCallback $callback) {
+    public function __construct(NodeTraversalCallback $callback) {
         $this->callback = $callback;
     }
 
@@ -29,7 +31,7 @@ class PHPParser_CallbackNodeTraverser
                 $this->traverse($node);
             }
 
-            if (!$node instanceof PHPParser_Node) {
+            if (!$node instanceof Node) {
                 continue;
             }
 

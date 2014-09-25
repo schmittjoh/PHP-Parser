@@ -1,17 +1,21 @@
 <?php
 
+namespace PhpParser\NodeVisitor;
+use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
+
 /**
  * Connects the nodes.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class PHPParser_NodeVisitor_NodeConnector extends PHPParser_NodeVisitorAbstract
+class NodeConnector extends NodeVisitorAbstract
 {
-    public function enterNode(PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
         $subNodes = array();
         foreach ($node as $subNode) {
-            if ($subNode instanceof PHPParser_Node) {
+            if ($subNode instanceof Node) {
                 $subNodes[] = $subNode;
                 continue;
             } else if (!is_array($subNode)) {
@@ -22,7 +26,7 @@ class PHPParser_NodeVisitor_NodeConnector extends PHPParser_NodeVisitorAbstract
         }
 
         for ($i=0,$c=count($subNodes); $i<$c; $i++) {
-            if (!$subNodes[$i] instanceof PHPParser_Node) {
+            if (!$subNodes[$i] instanceof Node) {
                 continue;
             }
 
