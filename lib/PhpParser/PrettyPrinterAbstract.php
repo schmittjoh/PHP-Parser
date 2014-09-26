@@ -144,7 +144,7 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Pretty printed statements
      */
-    protected function pStmts(array $nodes, $indent = true) {
+    protected function pStmts($nodes, $indent = true) {
         $result = '';
         foreach ($nodes as $node) {
             $result .= "\n"
