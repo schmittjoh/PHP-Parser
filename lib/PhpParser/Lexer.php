@@ -110,7 +110,11 @@ class Lexer
                 $this->line += substr_count($token[1], "\n");
 
                 if (T_COMMENT === $token[0]) {
-                    $startAttributes['comments'][] = new Comment($token[1], $token[2]);
+                    if (substr($token[1], 0, 2) === '/*') {
+                        $startAttributes['comments'][] = new Comment\Doc($token[1], $token[2]);
+                    } else {
+                        $startAttributes['comments'][] = new Comment($token[1], $token[2]);
+                    }
                 } elseif (T_DOC_COMMENT === $token[0]) {
                     $startAttributes['comments'][] = new Comment\Doc($token[1], $token[2]);
                 } elseif (!isset($this->dropTokens[$token[0]])) {
