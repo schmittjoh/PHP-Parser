@@ -161,6 +161,8 @@ class NameResolver extends NodeVisitorAbstract
             return $name;
         }
 
+        $origName = clone $name;
+
         // resolve aliases for qualified names
         $aliasName = strtolower($name->getFirst());
         if ($name->isQualified() && isset($this->aliases[Stmt\Use_::TYPE_NORMAL][$aliasName])) {
@@ -183,7 +185,10 @@ class NameResolver extends NodeVisitorAbstract
             $name->prepend($this->namespace);
         }
 
-        return new Name\FullyQualified($name->parts, $name->getAttributes());
+        $fqn = new Name\FullyQualified($name->parts, $name->getAttributes());
+        $fqn->setAttribute('original_name', $origName);
+
+        return $fqn;
     }
 
     protected function addNamespacedName(Node $node) {
