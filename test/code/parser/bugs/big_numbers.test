@@ -1,0 +1,12 @@
+Big numbers result in undefined index treated the same in HHVM and PHP
+-----
+<?php
+
+0xffffffff00000000;
+
+-----
+array(
+    0: Scalar_DNumber(
+        value: 1.8446744069415E+19
+    )
+)

@@ -190,6 +190,9 @@ class Lexer
             // T_CLOSE_TAG is equivalent to ';'
             } elseif(T_CLOSE_TAG === $i) {
                 $tokenMap[$i] = ord(';');
+            // HHVM has a special token for an overflowing number whereas plain PHP would regard this as a T_DNUMBER.
+            } elseif (defined('T_ONUMBER') && T_ONUMBER === $i) {
+                $tokenMap[$i] = Parser::T_DNUMBER;
             // and the others can be mapped directly
             } elseif ('UNKNOWN' !== ($name = token_name($i))
                       && defined($name = 'PhpParser\Parser::' . $name)
