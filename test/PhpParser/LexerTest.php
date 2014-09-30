@@ -35,6 +35,46 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group hhvm
+     * @dataProvider provideTestHhvmCompat
+     */
+    public function testHhvmCompat($code, array $tokenNames) {
+        $this->lexer->startLexing($code);
+
+        while ($id = $this->lexer->getNextToken($value, $startAttributes, $endAttributes)) {
+            if ($id < 256) {
+                continue; // ASCII
+            }
+
+            $tokenName = array_shift($tokenNames);
+            if ($tokenName !== null) {
+                $this->assertEquals($tokenName, $this->getTokenName($id));
+            }
+        }
+    }
+
+    private function getTokenName($id)
+    {
+        $ref = new \ReflectionClass('PhpParser\\Parser');
+        foreach ($ref->getConstants() as $name => $value) {
+            if ($value === $id) {
+                return $name;
+            }
+        }
+
+        throw new \RuntimeException(sprintf('No token for id %d.', $id));
+    }
+
+    public function provideTestHhvmCompat() {
+        return array(
+            array(
+                "<?php\n__COMPILER_HALT_OFFSET__;\n__halt_compiler();\nabc",
+                array('T_STRING', 'T_HALT_COMPILER')
+            ),
+        );
+    }
+
+    /**
      * @dataProvider provideTestLex
      */
     public function testLex($code, $tokens) {
@@ -100,7 +140,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                         array(
                             'startLine' => 2,
                             'comments' => array(
-                                new Comment('/* comment */', 1),
+                                new Comment\Doc('/* comment */', 1),
                                 new Comment('// comment' . "\n", 1),
                                 new Comment\Doc('/** docComment 1 */', 2),
                                 new Comment\Doc('/** docComment 2 */', 2),

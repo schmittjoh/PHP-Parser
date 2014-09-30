@@ -122,6 +122,10 @@ class Lexer
                     $startAttributes['startLine'] = $token[2];
                     $endAttributes['endLine']     = $this->line;
 
+                    if ( ! isset($this->tokenMap[$token[0]])) {
+                        throw new \RuntimeException(sprintf('Unsupported lexer token %d (%s) on line %d.', $token[0], token_name($token[0]), $this->line));
+                    }
+
                     return $this->tokenMap[$token[0]];
                 }
             }
@@ -193,6 +197,8 @@ class Lexer
             // HHVM has a special token for an overflowing number whereas plain PHP would regard this as a T_DNUMBER.
             } elseif (defined('T_ONUMBER') && T_ONUMBER === $i) {
                 $tokenMap[$i] = Parser::T_DNUMBER;
+            } elseif (defined('T_COMPILER_HALT_OFFSET') && T_COMPILER_HALT_OFFSET === $i) {
+                $tokenMap[$i] = Parser::T_STRING;
             // and the others can be mapped directly
             } elseif ('UNKNOWN' !== ($name = token_name($i))
                       && defined($name = 'PhpParser\Parser::' . $name)
