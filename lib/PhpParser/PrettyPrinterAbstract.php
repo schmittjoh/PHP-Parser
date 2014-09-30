@@ -72,9 +72,15 @@ abstract class PrettyPrinterAbstract
 
     protected $noIndentToken;
     protected $canUseSemicolonNamespaces;
+    private $hideComments = false;
 
     public function __construct() {
         $this->noIndentToken = '_NO_INDENT_' . mt_rand();
+    }
+
+    public function setHideComments($bool)
+    {
+        $this->hideComments = (boolean) $bool;
     }
 
     /**
@@ -255,6 +261,10 @@ abstract class PrettyPrinterAbstract
     }
 
     protected function pComments(array $comments) {
+        if ($this->hideComments) {
+            return '';
+        }
+
         $result = '';
 
         foreach ($comments as $comment) {
