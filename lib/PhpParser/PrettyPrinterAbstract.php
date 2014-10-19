@@ -153,6 +153,10 @@ abstract class PrettyPrinterAbstract
     protected function pStmts($nodes, $indent = true) {
         $result = '';
         foreach ($nodes as $node) {
+            if ( ! $node instanceof Node) {
+                continue;
+            }
+
             $result .= "\n"
                     . $this->pComments($node->getAttribute('comments', array()))
                     . $this->p($node)
