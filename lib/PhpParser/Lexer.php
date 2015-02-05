@@ -123,7 +123,12 @@ class Lexer
                     $endAttributes['endLine']     = $this->line;
 
                     if ( ! isset($this->tokenMap[$token[0]])) {
-                        throw new \RuntimeException(sprintf('Unsupported lexer token %d (%s) on line %d.', $token[0], token_name($token[0]), $this->line));
+                        $tokenName = token_name($token[0]);
+                        if ($tokenName === 'T_HASHBANG') {
+                            $token[0] = T_INLINE_HTML;
+                        } else {
+                            throw new \RuntimeException(sprintf('Unsupported lexer token %d (%s) on line %d.', $token[0], $tokenName, $this->line));
+                        }
                     }
 
                     return $this->tokenMap[$token[0]];
@@ -199,6 +204,8 @@ class Lexer
                 $tokenMap[$i] = Parser::T_DNUMBER;
             } elseif (defined('T_COMPILER_HALT_OFFSET') && T_COMPILER_HALT_OFFSET === $i) {
                 $tokenMap[$i] = Parser::T_STRING;
+            } elseif (defined('T_HASHBANG') && T_HASHBANG === $i) {
+                $tokenMap[$i] = Parser::T_INLINE_HTML;
             // and the others can be mapped directly
             } elseif ('UNKNOWN' !== ($name = token_name($i))
                       && defined($name = 'PhpParser\Parser::' . $name)

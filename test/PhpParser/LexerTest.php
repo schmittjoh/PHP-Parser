@@ -71,6 +71,10 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 "<?php\n__COMPILER_HALT_OFFSET__;\n__halt_compiler();\nabc",
                 array('T_STRING', 'T_HALT_COMPILER')
             ),
+            array(
+                "#!/bin/bash\n<?php echo 'foo';\n",
+                array('T_INLINE_HTML'),
+            )
         );
     }
 

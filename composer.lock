@@ -5,9 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "d903e144edcc98454146dc338598cc26",
-    "packages": [
-
-    ],
+    "packages": [],
     "packages-dev": [
         {
             "name": "ocramius/instantiator",
@@ -816,19 +814,14 @@
             "time": "2014-09-22 09:14:18"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": [],
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3",
         "ext-tokenizer": "*"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }
