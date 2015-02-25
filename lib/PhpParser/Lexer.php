@@ -35,7 +35,7 @@ class Lexer
         $scream = ini_set('xdebug.scream', 0);
 
         $this->resetErrors();
-        $this->tokens = @token_get_all($code);
+        $this->tokens = $this->filterTokens(@token_get_all($code));
         $this->handleErrors();
 
         ini_set('xdebug.scream', $scream);
@@ -43,6 +43,49 @@ class Lexer
         $this->code = $code; // keep the code around for __halt_compiler() handling
         $this->pos  = -1;
         $this->line =  1;
+    }
+
+    private function filterTokens(array $tokens)
+    {
+        if ( ! defined('HHVM_VERSION')) {
+            return $tokens;
+        }
+
+        $newTokens = array();
+        for ($i=0, $c=count($tokens); $i<$c; $i++) {
+            $token = $tokens[$i];
+
+            if (is_string($token)) {
+                $newTokens[] = $token;
+                continue;
+            }
+
+            if ($token[0] === T_OPEN_TAG && isset($tokens[$i + 1][0]) && $tokens[$i + 1][0] === T_STRING && $tokens[$i + 1][1] === 'xml') {
+                $content = '<?xml';
+
+                for ($j=$i+2; $j<$c; $j++) {
+                    if (is_string($tokens[$j])) {
+                        $content .= $tokens[$j];
+                        continue;
+                    }
+
+                    if ($tokens[$j][0] === T_OPEN_TAG || $tokens[$j][0] === T_OPEN_TAG_WITH_ECHO) {
+                        break;
+                    }
+
+                    $content .= $tokens[$j][1];
+                }
+
+                $newTokens[] = array(T_INLINE_HTML, $content, $token[2]);
+                $i = $j - 1;
+
+                continue;
+            }
+
+            $newTokens[] = $token;
+        }
+
+        return $newTokens;
     }
 
     protected function resetErrors() {

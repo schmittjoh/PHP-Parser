@@ -1,0 +1,36 @@
+Inline XML treated the same in HHVM and PHP
+-----
+<?php
+   echo 'bar';
+?>
+<?xml ?>
+<content>
+</content>
+<?php
+  echo 'baz';
+?>
+
+-----
+array(
+    0: Stmt_Echo(
+        exprs: array(
+            0: Scalar_String(
+                value: bar
+            )
+        )
+    )
+    1: Stmt_InlineHTML(
+        value: <?xml ?>
+    <content>
+    </content>
+
+    )
+    2: Stmt_Echo(
+        exprs: array(
+            0: Scalar_String(
+                value: baz
+            )
+        )
+    )
+)
+
