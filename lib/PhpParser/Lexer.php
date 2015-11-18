@@ -245,8 +245,10 @@ class Lexer
                         $tokenName = token_name($token[0]);
                         if ($tokenName === 'T_HASHBANG') {
                             $token[0] = T_INLINE_HTML;
+                        } elseif ($tokenName === 'T_HH_ERROR') {
+                            throw new Error(sprintf('Unexpected content after "%s"', $token[1]), $this->line);
                         } else {
-                            throw new \RuntimeException(sprintf('Unsupported lexer token %d (%s) on line %d.', $token[0], $tokenName, $this->line));
+                            throw new Error(sprintf('Unsupported lexer token %d (%s)', $token[0], $tokenName), $this->line);
                         }
                     }
 
