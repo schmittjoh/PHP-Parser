@@ -7,7 +7,7 @@ use PhpParser;
 class XMLTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers XML<extended>
+     * @covers PhpParser\Serializer\XML<extended>
      */
     public function testSerialize() {
         $code = <<<CODE
@@ -112,6 +112,9 @@ CODE;
      </node:Param>
     </scalar:array>
    </subNode:params>
+   <subNode:returnType>
+    <scalar:null/>
+   </subNode:returnType>
    <subNode:stmts>
     <scalar:array>
      <node:Stmt_Echo>
@@ -144,9 +147,10 @@ CODE;
 </AST>
 XML;
 
-        $parser     = new PhpParser\Parser(new PhpParser\Lexer);
+        $parser     = new PhpParser\Parser\Php7(new PhpParser\Lexer);
         $serializer = new XML;
 
+        $code = str_replace("\r\n", "\n", $code);
         $stmts = $parser->parse($code);
         $this->assertXmlStringEqualsXmlString($xml, $serializer->serialize($stmts));
     }

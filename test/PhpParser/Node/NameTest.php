@@ -6,93 +6,125 @@ class NameTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct() {
         $name = new Name(array('foo', 'bar'));
-        $this->assertEquals(array('foo', 'bar'), $name->parts);
+        $this->assertSame(array('foo', 'bar'), $name->parts);
 
         $name = new Name('foo\bar');
-        $this->assertEquals(array('foo', 'bar'), $name->parts);
+        $this->assertSame(array('foo', 'bar'), $name->parts);
     }
 
     public function testGet() {
         $name = new Name('foo');
-        $this->assertEquals('foo', $name->getFirst());
-        $this->assertEquals('foo', $name->getLast());
+        $this->assertSame('foo', $name->getFirst());
+        $this->assertSame('foo', $name->getLast());
 
         $name = new Name('foo\bar');
-        $this->assertEquals('foo', $name->getFirst());
-        $this->assertEquals('bar', $name->getLast());
+        $this->assertSame('foo', $name->getFirst());
+        $this->assertSame('bar', $name->getLast());
     }
 
     public function testToString() {
         $name = new Name('foo\bar');
 
-        $this->assertEquals('foo\bar', (string) $name);
-        $this->assertEquals('foo\bar', $name->toString());
-        $this->assertEquals('foo_bar', $name->toString('_'));
+        $this->assertSame('foo\bar', (string) $name);
+        $this->assertSame('foo\bar', $name->toString());
+        $this->assertSame('foo_bar', $name->toString('_'));
     }
 
     public function testSet() {
         $name = new Name('foo');
 
         $name->set('foo\bar');
-        $this->assertEquals('foo\bar', $name->toString());
+        $this->assertSame('foo\bar', $name->toString());
 
         $name->set(array('foo', 'bar'));
-        $this->assertEquals('foo\bar', $name->toString());
+        $this->assertSame('foo\bar', $name->toString());
 
         $name->set(new Name('foo\bar'));
-        $this->assertEquals('foo\bar', $name->toString());
+        $this->assertSame('foo\bar', $name->toString());
     }
 
     public function testSetFirst() {
         $name = new Name('foo');
 
         $name->setFirst('bar');
-        $this->assertEquals('bar', $name->toString());
+        $this->assertSame('bar', $name->toString());
 
         $name->setFirst('A\B');
-        $this->assertEquals('A\B', $name->toString());
+        $this->assertSame('A\B', $name->toString());
 
         $name->setFirst('C');
-        $this->assertEquals('C\B', $name->toString());
+        $this->assertSame('C\B', $name->toString());
 
         $name->setFirst('D\E');
-        $this->assertEquals('D\E\B', $name->toString());
+        $this->assertSame('D\E\B', $name->toString());
     }
 
     public function testSetLast() {
         $name = new Name('foo');
 
         $name->setLast('bar');
-        $this->assertEquals('bar', $name->toString());
+        $this->assertSame('bar', $name->toString());
 
         $name->setLast('A\B');
-        $this->assertEquals('A\B', $name->toString());
+        $this->assertSame('A\B', $name->toString());
 
         $name->setLast('C');
-        $this->assertEquals('A\C', $name->toString());
+        $this->assertSame('A\C', $name->toString());
 
         $name->setLast('D\E');
-        $this->assertEquals('A\D\E', $name->toString());
+        $this->assertSame('A\D\E', $name->toString());
     }
 
     public function testAppend() {
         $name = new Name('foo');
 
         $name->append('bar');
-        $this->assertEquals('foo\bar', $name->toString());
+        $this->assertSame('foo\bar', $name->toString());
 
         $name->append('bar\foo');
-        $this->assertEquals('foo\bar\bar\foo', $name->toString());
+        $this->assertSame('foo\bar\bar\foo', $name->toString());
     }
 
     public function testPrepend() {
         $name = new Name('foo');
 
         $name->prepend('bar');
-        $this->assertEquals('bar\foo', $name->toString());
+        $this->assertSame('bar\foo', $name->toString());
 
         $name->prepend('foo\bar');
-        $this->assertEquals('foo\bar\bar\foo', $name->toString());
+        $this->assertSame('foo\bar\bar\foo', $name->toString());
+    }
+
+    public function testSlice() {
+        $name = new Name('foo\bar');
+        $this->assertEquals(new Name('foo\bar'), $name->slice(0));
+        $this->assertEquals(new Name('bar'), $name->slice(1));
+        $this->assertEquals(new Name([]), $name->slice(2));
+    }
+
+    /**
+     * @expectedException \OutOfBoundsException
+     * @expectedExceptionMessage Offset 4 is out of bounds
+     */
+    public function testSliceException() {
+        (new Name('foo\bar\baz'))->slice(4);
+    }
+
+    public function testConcat() {
+        $this->assertEquals(new Name('foo\bar\baz'), Name::concat('foo', 'bar\baz'));
+        $this->assertEquals(
+            new Name\FullyQualified('foo\bar'),
+            Name\FullyQualified::concat(['foo'], new Name('bar'))
+        );
+
+        $attributes = ['foo' => 'bar'];
+        $this->assertEquals(
+            new Name\Relative('foo\bar\baz', $attributes),
+            Name\Relative::concat(new Name\FullyQualified('foo\bar'), 'baz', $attributes)
+        );
+
+        $this->assertEquals(new Name('foo'), Name::concat([], 'foo'));
+        $this->assertEquals(new Name([]), Name::concat([], []));
     }
 
     public function testIs() {

@@ -1,12 +1,12 @@
 PHP Parser
 ==========
 
-This is a PHP 5.2 to PHP 5.6 parser written in PHP. It's purpose is to simplify static code analysis and
+This is a PHP 5.2 to PHP 5.6 parser written in PHP. Its purpose is to simplify static code analysis and
 manipulation.
 
-[**Documentation for version 1.0.x**][doc_master] (stable; for running on PHP >= 5.3).
+[**Documentation for version 1.x**][doc_1_x] (stable; for running on PHP >= 5.3).
 
-[Documentation for version 0.9.x][doc_0_9] (unsupported; for running on PHP 5.2).
+[Documentation for version 2.x-dev][doc_master] (dev; for running on PHP >= 5.4).
 
 In a Nutshell
 -------------
@@ -22,7 +22,7 @@ hello\world('foo', 'bar' . 'baz');
 
 You'll get a syntax tree looking roughly like this:
 
-```
+```php
 array(
     0: Stmt_Echo(
         exprs: array(
@@ -70,7 +70,25 @@ programming errors or security issues).
 Additionally, you can convert a syntax tree back to PHP code. This allows you to do code preprocessing
 (like automatedly porting code to older PHP versions).
 
-So, that's it, in a nutshell. You can find everything else in the [docs][doc_master].
+Installation
+------------
 
- [doc_0_9]: https://github.com/nikic/PHP-Parser/tree/0.9/doc
+The preferred installation method is [composer](https://getcomposer.org):
+
+    php composer.phar require nikic/php-parser
+
+Documentation
+-------------
+
+ 1. [Introduction](doc/0_Introduction.markdown)
+ 2. [Usage of basic components](doc/2_Usage_of_basic_components.markdown)
+ 3. [Other node tree representations](doc/3_Other_node_tree_representations.markdown)
+ 4. [Code generation](doc/4_Code_generation.markdown)
+
+Component documentation:
+
+ 1. [Error](doc/component/Error.markdown)
+ 2. [Lexer](doc/component/Lexer.markdown)
+
+ [doc_1_x]: https://github.com/nikic/PHP-Parser/tree/1.x/doc
  [doc_master]: https://github.com/nikic/PHP-Parser/tree/master/doc
