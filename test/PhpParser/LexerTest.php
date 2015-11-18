@@ -93,8 +93,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             $this->setExpectedException(\PhpParser\Error::class, 'Unexpected content after "<?php" on line 1');
         }
 
-        $this->lexer->startLexing('<?php;');
-        while ($id = $this->lexer->getNextToken($value, $startAttributes, $endAttributes)) {
+        $lexer = $this->getLexer();
+        $lexer->startLexing('<?php;');
+        while ($id = $lexer->getNextToken($value, $startAttributes, $endAttributes)) {
             // This is only executed on vanilla PHP
             $this->assertEquals(T_CHARACTER, $id);
             $this->assertEquals('<?php;', $value);
