@@ -1,0 +1,36 @@
+Anonymous classes (https://wiki.php.net/rfc/anonymous_classes)
+-----
+<?php
+return new class($path) extends DirectoryIterator
+{
+};
+-----
+array(
+    0: Stmt_Return(
+        expr: Expr_New(
+            class: Stmt_Class(
+                type: 0
+                name: null
+                extends: Name(
+                    parts: array(
+                        0: DirectoryIterator
+                    )
+                )
+                implements: array(
+                )
+                stmts: array(
+                )
+            )
+            args: array(
+                0: Arg(
+                    value: Expr_Variable(
+                        name: path
+                    )
+                    byRef: false
+                    unpack: false
+                )
+            )
+        )
+    )
+)
+

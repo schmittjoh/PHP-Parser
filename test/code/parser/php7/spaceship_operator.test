@@ -1,0 +1,63 @@
+Spaceship operator (https://wiki.php.net/rfc/combined-comparison-operator)
+-----
+<?php
+echo [1, 2, 3] <=> [1, 2, 4];
+-----
+array(
+    0: Stmt_Echo(
+        exprs: array(
+            0: Expr_BinaryOp_Spaceship(
+                left: Expr_Array(
+                    items: array(
+                        0: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 1
+                            )
+                            byRef: false
+                        )
+                        1: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 2
+                            )
+                            byRef: false
+                        )
+                        2: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 3
+                            )
+                            byRef: false
+                        )
+                    )
+                )
+                right: Expr_Array(
+                    items: array(
+                        0: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 1
+                            )
+                            byRef: false
+                        )
+                        1: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 2
+                            )
+                            byRef: false
+                        )
+                        2: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 4
+                            )
+                            byRef: false
+                        )
+                    )
+                )
+            )
+        )
+    )
+)

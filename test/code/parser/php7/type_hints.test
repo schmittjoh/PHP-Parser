@@ -1,0 +1,68 @@
+Scalar type hints (https://wiki.php.net/rfc/scalar_type_hints_v5)
+-----
+<?php
+function adder(int $a, float $b, string $c, bool $d): int
+{
+    return $a + $b . $c . $d;
+}
+-----
+!!php7
+array(
+    0: Stmt_Function(
+        byRef: false
+        name: adder
+        params: array(
+            0: Param(
+                type: int
+                byRef: false
+                variadic: false
+                name: a
+                default: null
+            )
+            1: Param(
+                type: float
+                byRef: false
+                variadic: false
+                name: b
+                default: null
+            )
+            2: Param(
+                type: string
+                byRef: false
+                variadic: false
+                name: c
+                default: null
+            )
+            3: Param(
+                type: bool
+                byRef: false
+                variadic: false
+                name: d
+                default: null
+            )
+        )
+        returnType: int
+        stmts: array(
+            0: Stmt_Return(
+                expr: Expr_BinaryOp_Concat(
+                    left: Expr_BinaryOp_Concat(
+                        left: Expr_BinaryOp_Plus(
+                            left: Expr_Variable(
+                                name: a
+                            )
+                            right: Expr_Variable(
+                                name: b
+                            )
+                        )
+                        right: Expr_Variable(
+                            name: c
+                        )
+                    )
+                    right: Expr_Variable(
+                        name: d
+                    )
+                )
+            )
+        )
+    )
+)

@@ -1,0 +1,161 @@
+Group use declarations (https://wiki.php.net/rfc/group_use_declarations)
+-----
+<?php
+use FooLibrary\Bar\Baz\{
+    ClassA, ClassB, ClassC, ClassD as Fizbo
+};
+use Symfony\Component\Console\{
+    Helper\Table,
+    Input\ArrayInput,
+    Input\InputInterface,
+    Output\NullOutput,
+    Output\OutputInterface,
+    Question\Question,
+    Question\ChoiceQuestion as Choice,
+    Question\ConfirmationQuestion
+};
+-----
+array(
+    0: Stmt_GroupUse(
+        type: 0
+        prefix: Name(
+            parts: array(
+                0: FooLibrary
+                1: Bar
+                2: Baz
+            )
+        )
+        uses: array(
+            0: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: ClassA
+                    )
+                )
+                alias: ClassA
+            )
+            1: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: ClassB
+                    )
+                )
+                alias: ClassB
+            )
+            2: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: ClassC
+                    )
+                )
+                alias: ClassC
+            )
+            3: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: ClassD
+                    )
+                )
+                alias: Fizbo
+            )
+        )
+    )
+    1: Stmt_GroupUse(
+        type: 0
+        prefix: Name(
+            parts: array(
+                0: Symfony
+                1: Component
+                2: Console
+            )
+        )
+        uses: array(
+            0: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Helper
+                        1: Table
+                    )
+                )
+                alias: Table
+            )
+            1: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Input
+                        1: ArrayInput
+                    )
+                )
+                alias: ArrayInput
+            )
+            2: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Input
+                        1: InputInterface
+                    )
+                )
+                alias: InputInterface
+            )
+            3: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Output
+                        1: NullOutput
+                    )
+                )
+                alias: NullOutput
+            )
+            4: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Output
+                        1: OutputInterface
+                    )
+                )
+                alias: OutputInterface
+            )
+            5: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Question
+                        1: Question
+                    )
+                )
+                alias: Question
+            )
+            6: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Question
+                        1: ChoiceQuestion
+                    )
+                )
+                alias: Choice
+            )
+            7: Stmt_UseUse(
+                type: 1
+                name: Name(
+                    parts: array(
+                        0: Question
+                        1: ConfirmationQuestion
+                    )
+                )
+                alias: ConfirmationQuestion
+            )
+        )
+    )
+)
+
+

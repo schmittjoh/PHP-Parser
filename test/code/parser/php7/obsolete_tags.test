@@ -1,0 +1,14 @@
+Several Tags were made obsolete (https://wiki.php.net/rfc/remove_alternative_php_tags)
+-----
+    <% $x %>
+    <script language=php>$x</script>
+-----
+array(
+    0: Stmt_InlineHTML(
+        value: <% $x %>
+
+    )
+    1: Expr_Variable(
+        name: x
+    )
+)

@@ -1,0 +1,33 @@
+Support of the isset ternary (null coalesce) operator (https://wiki.php.net/rfc/isset_ternary)
+-----
+<?php
+var_dump($x ?? $y ?? $z);
+-----
+array(
+    0: Expr_FuncCall(
+        name: Name(
+            parts: array(
+                0: var_dump
+            )
+        )
+        args: array(
+            0: Arg(
+                value: Expr_BinaryOp_Coalesce(
+                    left: Expr_Variable(
+                        name: x
+                    )
+                    right: Expr_BinaryOp_Coalesce(
+                        left: Expr_Variable(
+                            name: y
+                        )
+                        right: Expr_Variable(
+                            name: z
+                        )
+                    )
+                )
+                byRef: false
+                unpack: false
+            )
+        )
+    )
+)

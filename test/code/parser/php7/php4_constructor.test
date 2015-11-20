@@ -1,0 +1,39 @@
+PHP4 constructors are now finally obsolete (https://wiki.php.net/rfc/remove_php4_constructors)
+-----
+<?php
+class Filter
+{
+    function filter($a)
+    {
+    }
+}
+-----
+array(
+    0: Stmt_Class(
+        type: 0
+        name: Filter
+        extends: null
+        implements: array(
+        )
+        stmts: array(
+            0: Stmt_ClassMethod(
+                type: 0
+                byRef: false
+                name: filter
+                params: array(
+                    0: Param(
+                        type: null
+                        byRef: false
+                        variadic: false
+                        name: a
+                        default: null
+                    )
+                )
+                returnType: null
+                stmts: array(
+                )
+            )
+        )
+    )
+)
+
