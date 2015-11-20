@@ -2,7 +2,7 @@
 
 namespace PhpParser;
 
-abstract class NodeAbstract implements Node
+abstract class NodeAbstract implements Node, \IteratorAggregate
 {
     protected $attributes;
 
@@ -81,5 +81,13 @@ abstract class NodeAbstract implements Node
 
     public function getAttributes() {
         return $this->attributes;
+    }
+
+
+    public function getIterator()
+    {
+        foreach ($this->getSubNodeNames() as $prop) {
+            yield $prop => $this->{$prop};
+        }
     }
 }
