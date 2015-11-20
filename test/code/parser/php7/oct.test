@@ -1,0 +1,14 @@
+Illegal oct is disallowed in php7 (http://php.net/manual/de/language.types.integer.php)
+-----
+<?php
+echo 0678;
+-----
+array(
+    0: Stmt_Echo(
+        exprs: array(
+            0: Scalar_LNumber(
+                value: 55
+            )
+        )
+    )
+)

@@ -1,0 +1,103 @@
+Generators can now return a value (https://wiki.php.net/rfc/generator-return-expressions)
+-----
+<?php
+function foosie()
+{
+    yield 1;
+    yield 2;
+    return 42;
+}
+
+$bar = foosie();
+foreach ($bar as $element) {
+    echo $element, "\n";
+}
+var_dump($bar->getReturn());
+-----
+array(
+    0: Stmt_Function(
+        byRef: false
+        name: foosie
+        params: array(
+        )
+        returnType: null
+        stmts: array(
+            0: Expr_Yield(
+                key: null
+                value: Scalar_LNumber(
+                    value: 1
+                )
+            )
+            1: Expr_Yield(
+                key: null
+                value: Scalar_LNumber(
+                    value: 2
+                )
+            )
+            2: Stmt_Return(
+                expr: Scalar_LNumber(
+                    value: 42
+                )
+            )
+        )
+    )
+    1: Expr_Assign(
+        var: Expr_Variable(
+            name: bar
+        )
+        expr: Expr_FuncCall(
+            name: Name(
+                parts: array(
+                    0: foosie
+                )
+            )
+            args: array(
+            )
+        )
+    )
+    2: Stmt_Foreach(
+        expr: Expr_Variable(
+            name: bar
+        )
+        keyVar: null
+        byRef: false
+        valueVar: Expr_Variable(
+            name: element
+        )
+        stmts: array(
+            0: Stmt_Echo(
+                exprs: array(
+                    0: Expr_Variable(
+                        name: element
+                    )
+                    1: Scalar_String(
+                        value:
+
+                    )
+                )
+            )
+        )
+    )
+    3: Expr_FuncCall(
+        name: Name(
+            parts: array(
+                0: var_dump
+            )
+        )
+        args: array(
+            0: Arg(
+                value: Expr_MethodCall(
+                    var: Expr_Variable(
+                        name: bar
+                    )
+                    name: getReturn
+                    args: array(
+                    )
+                )
+                byRef: false
+                unpack: false
+            )
+        )
+    )
+)
+

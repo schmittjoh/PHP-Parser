@@ -1,0 +1,74 @@
+Generator delegation (https://wiki.php.net/rfc/generator-delegation)
+-----
+<?php
+function g()
+{
+    yield 1;
+    yield from [2, 3, 4];
+    yield 5;
+    $r = yield 5;  //needs parentheses in 5
+}
+-----
+!!php7
+array(
+    0: Stmt_Function(
+        byRef: false
+        name: g
+        params: array(
+        )
+        returnType: null
+        stmts: array(
+            0: Expr_Yield(
+                key: null
+                value: Scalar_LNumber(
+                    value: 1
+                )
+            )
+            1: Expr_YieldFrom(
+                expr: Expr_Array(
+                    items: array(
+                        0: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 2
+                            )
+                            byRef: false
+                        )
+                        1: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 3
+                            )
+                            byRef: false
+                        )
+                        2: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 4
+                            )
+                            byRef: false
+                        )
+                    )
+                )
+            )
+            2: Expr_Yield(
+                key: null
+                value: Scalar_LNumber(
+                    value: 5
+                )
+            )
+            3: Expr_Assign(
+                var: Expr_Variable(
+                    name: r
+                )
+                expr: Expr_Yield(
+                    key: null
+                    value: Scalar_LNumber(
+                        value: 5
+                    )
+                )
+            )
+        )
+    )
+)
+

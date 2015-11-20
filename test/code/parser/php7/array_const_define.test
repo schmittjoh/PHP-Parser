@@ -1,0 +1,56 @@
+Array constants with define() (http://php.net/manual/en/migration70.new-features.php)
+-----
+<?php
+define('ANIMALS', [
+    'dog',
+    'cat',
+    'bird'
+]);
+-----
+array(
+    0: Expr_FuncCall(
+        name: Name(
+            parts: array(
+                0: define
+            )
+        )
+        args: array(
+            0: Arg(
+                value: Scalar_String(
+                    value: ANIMALS
+                )
+                byRef: false
+                unpack: false
+            )
+            1: Arg(
+                value: Expr_Array(
+                    items: array(
+                        0: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_String(
+                                value: dog
+                            )
+                            byRef: false
+                        )
+                        1: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_String(
+                                value: cat
+                            )
+                            byRef: false
+                        )
+                        2: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_String(
+                                value: bird
+                            )
+                            byRef: false
+                        )
+                    )
+                )
+                byRef: false
+                unpack: false
+            )
+        )
+    )
+)

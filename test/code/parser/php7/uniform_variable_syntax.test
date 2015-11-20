@@ -1,0 +1,363 @@
+Uniform variable syntax (https://wiki.php.net/rfc/uniform_variable_syntax)
+-----
+<?php
+$foo()['bar']();
+[$obj1, $obj2][0]->prop;
+getStr(){0};
+-----
+!!php7
+array(
+    0: Expr_FuncCall(
+        name: Expr_ArrayDimFetch(
+            var: Expr_FuncCall(
+                name: Expr_Variable(
+                    name: foo
+                )
+                args: array(
+                )
+            )
+            dim: Scalar_String(
+                value: bar
+            )
+        )
+        args: array(
+        )
+    )
+    1: Expr_PropertyFetch(
+        var: Expr_ArrayDimFetch(
+            var: Expr_Array(
+                items: array(
+                    0: Expr_ArrayItem(
+                        key: null
+                        value: Expr_Variable(
+                            name: obj1
+                        )
+                        byRef: false
+                    )
+                    1: Expr_ArrayItem(
+                        key: null
+                        value: Expr_Variable(
+                            name: obj2
+                        )
+                        byRef: false
+                    )
+                )
+            )
+            dim: Scalar_LNumber(
+                value: 0
+            )
+        )
+        name: prop
+    )
+    2: Expr_ArrayDimFetch(
+        var: Expr_FuncCall(
+            name: Name(
+                parts: array(
+                    0: getStr
+                )
+            )
+            args: array(
+            )
+        )
+        dim: Scalar_LNumber(
+            value: 0
+        )
+    )
+)
+-----
+<?php
+$foo['bar']::$baz;
+$foo::$bar::$baz;
+$foo->bar()::baz();
+-----
+!!php7
+array(
+    0: Expr_StaticPropertyFetch(
+        class: Expr_ArrayDimFetch(
+            var: Expr_Variable(
+                name: foo
+            )
+            dim: Scalar_String(
+                value: bar
+            )
+        )
+        name: baz
+    )
+    1: Expr_StaticPropertyFetch(
+        class: Expr_StaticPropertyFetch(
+            class: Expr_Variable(
+                name: foo
+            )
+            name: bar
+        )
+        name: baz
+    )
+    2: Expr_StaticCall(
+        class: Expr_MethodCall(
+            var: Expr_Variable(
+                name: foo
+            )
+            name: bar
+            args: array(
+            )
+        )
+        name: baz
+        args: array(
+        )
+    )
+)
+-----
+<?php
+foo()();
+$foo->bar()();
+Foo::bar()();
+$foo()();
+-----
+!!php7
+array(
+    0: Expr_FuncCall(
+        name: Expr_FuncCall(
+            name: Name(
+                parts: array(
+                    0: foo
+                )
+            )
+            args: array(
+            )
+        )
+        args: array(
+        )
+    )
+    1: Expr_FuncCall(
+        name: Expr_MethodCall(
+            var: Expr_Variable(
+                name: foo
+            )
+            name: bar
+            args: array(
+            )
+        )
+        args: array(
+        )
+    )
+    2: Expr_FuncCall(
+        name: Expr_StaticCall(
+            class: Name(
+                parts: array(
+                    0: Foo
+                )
+            )
+            name: bar
+            args: array(
+            )
+        )
+        args: array(
+        )
+    )
+    3: Expr_FuncCall(
+        name: Expr_FuncCall(
+            name: Expr_Variable(
+                name: foo
+            )
+            args: array(
+            )
+        )
+        args: array(
+        )
+    )
+)
+-----
+<?php
+($x > 0)['foo'];
+($x > 0)->foo;
+($x > 0)->foo();
+($x > 0)::$foo;
+($x > 0)::foo();
+($x > 0)();
+(function () {
+})();
+($obj->closure)();
+-----
+!!php7
+array(
+    0: Expr_ArrayDimFetch(
+        var: Expr_BinaryOp_Greater(
+            left: Expr_Variable(
+                name: x
+            )
+            right: Scalar_LNumber(
+                value: 0
+            )
+        )
+        dim: Scalar_String(
+            value: foo
+        )
+    )
+    1: Expr_PropertyFetch(
+        var: Expr_BinaryOp_Greater(
+            left: Expr_Variable(
+                name: x
+            )
+            right: Scalar_LNumber(
+                value: 0
+            )
+        )
+        name: foo
+    )
+    2: Expr_MethodCall(
+        var: Expr_BinaryOp_Greater(
+            left: Expr_Variable(
+                name: x
+            )
+            right: Scalar_LNumber(
+                value: 0
+            )
+        )
+        name: foo
+        args: array(
+        )
+    )
+    3: Expr_StaticPropertyFetch(
+        class: Expr_BinaryOp_Greater(
+            left: Expr_Variable(
+                name: x
+            )
+            right: Scalar_LNumber(
+                value: 0
+            )
+        )
+        name: foo
+    )
+    4: Expr_StaticCall(
+        class: Expr_BinaryOp_Greater(
+            left: Expr_Variable(
+                name: x
+            )
+            right: Scalar_LNumber(
+                value: 0
+            )
+        )
+        name: foo
+        args: array(
+        )
+    )
+    5: Expr_FuncCall(
+        name: Expr_BinaryOp_Greater(
+            left: Expr_Variable(
+                name: x
+            )
+            right: Scalar_LNumber(
+                value: 0
+            )
+        )
+        args: array(
+        )
+    )
+    6: Expr_FuncCall(
+        name: Expr_Closure(
+            static: false
+            byRef: false
+            params: array(
+            )
+            uses: array(
+            )
+            returnType: null
+            stmts: array(
+            )
+        )
+        args: array(
+        )
+    )
+    7: Expr_FuncCall(
+        name: Expr_PropertyFetch(
+            var: Expr_Variable(
+                name: obj
+            )
+            name: closure
+        )
+        args: array(
+        )
+    )
+)
+-----
+<?php
+"string"->toLower();
+[$obj, 'method']();
+'Foo'::$bar;
+-----
+!!php7
+array(
+    0: Expr_MethodCall(
+        var: Scalar_String(
+            value: string
+        )
+        name: toLower
+        args: array(
+        )
+    )
+    1: Expr_FuncCall(
+        name: Expr_Array(
+            items: array(
+                0: Expr_ArrayItem(
+                    key: null
+                    value: Expr_Variable(
+                        name: obj
+                    )
+                    byRef: false
+                )
+                1: Expr_ArrayItem(
+                    key: null
+                    value: Scalar_String(
+                        value: method
+                    )
+                    byRef: false
+                )
+            )
+        )
+        args: array(
+        )
+    )
+    2: Expr_StaticPropertyFetch(
+        class: Scalar_String(
+            value: Foo
+        )
+        name: bar
+    )
+)
+-----
+<?php
+global $$foo->bar;
+-----
+!!php5
+array(
+    0: Stmt_Global(
+        vars: array(
+            0: Expr_Variable(
+                name: Expr_PropertyFetch(
+                    var: Expr_Variable(
+                        name: foo
+                    )
+                    name: bar
+                )
+            )
+        )
+    )
+)
+-----
+<?php
+global ${$foo->bar};
+-----
+array(
+    0: Stmt_Global(
+        vars: array(
+            0: Expr_Variable(
+                name: Expr_PropertyFetch(
+                    var: Expr_Variable(
+                        name: foo
+                    )
+                    name: bar
+                )
+            )
+        )
+    )
+)

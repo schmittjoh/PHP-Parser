@@ -1,0 +1,50 @@
+Return type hints (https://wiki.php.net/rfc/return_types)
+-----
+<?php
+function foo(): array
+{
+    return [];
+}
+-----
+array(
+    0: Stmt_Function(
+        byRef: false
+        name: foo
+        params: array(
+        )
+        returnType: array
+        stmts: array(
+            0: Stmt_Return(
+                expr: Expr_Array(
+                    items: array(
+                    )
+                )
+            )
+        )
+    )
+)
+-----
+<?php
+function foo(): int
+{
+    return 42;
+}
+-----
+!!php7
+array(
+    0: Stmt_Function(
+        byRef: false
+        name: foo
+        params: array(
+        )
+        returnType: int
+        stmts: array(
+            0: Stmt_Return(
+                expr: Scalar_LNumber(
+                    value: 42
+                )
+            )
+        )
+    )
+)
+
