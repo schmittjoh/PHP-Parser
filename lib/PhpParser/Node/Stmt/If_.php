@@ -34,6 +34,6 @@ class If_ extends Node\Stmt
     }
 
     public function getSubNodeNames() {
-        return array('cond', 'stmts', 'elseifs', 'else');
+        return array('stmts', 'elseifs', 'else', 'cond');
     }
 }
