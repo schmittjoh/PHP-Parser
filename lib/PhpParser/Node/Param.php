@@ -42,6 +42,6 @@ class Param extends NodeAbstract
     }
 
     public function getSubNodeNames() {
-        return array('type', 'byRef', 'variadic', 'name', 'default');
+        return array('default', 'type', 'byRef', 'variadic', 'name');
     }
 }

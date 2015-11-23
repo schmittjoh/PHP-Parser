@@ -38,6 +38,6 @@ class Foreach_ extends Node\Stmt
     }
 
     public function getSubNodeNames() {
-        return array('expr', 'keyVar', 'byRef', 'valueVar', 'stmts');
+        return array( 'stmts', 'expr', 'keyVar', 'byRef', 'valueVar');
     }
 }
