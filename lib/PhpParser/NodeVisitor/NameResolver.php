@@ -238,6 +238,7 @@ class NameResolver extends NodeVisitorAbstract
             $node->namespacedName = Name::concat($this->namespace, $node->name);
         } else {
             $node->namespacedName = new Name($node->name);
+            $node->namespacedName->setLine($node->getLine());
         }
     }
 }
