@@ -178,12 +178,18 @@ class NameResolver extends NodeVisitorAbstract
         if (!$name->isRelative() && isset($this->aliases[Stmt\Use_::TYPE_NORMAL][$aliasName])) {
             // resolve aliases (for non-relative names)
             $alias = $this->aliases[Stmt\Use_::TYPE_NORMAL][$aliasName];
-            return FullyQualified::concat($alias, $name->slice(1), $name->getAttributes());
+            $fqn = FullyQualified::concat($alias, $name->slice(1), $name->getAttributes());
+            $fqn->setAttribute('original_name', $origName);
+
+            return $fqn;
         }
 
         if (null !== $this->namespace) {
             // if no alias exists prepend current namespace
-            return FullyQualified::concat($this->namespace, $name, $name->getAttributes());
+            $fqn = FullyQualified::concat($this->namespace, $name, $name->getAttributes());
+            $fqn->setAttribute('original_name', $origName);
+
+            return $fqn;
         }
 
         $fqn = new FullyQualified($name->parts, $name->getAttributes());
@@ -204,7 +210,10 @@ class NameResolver extends NodeVisitorAbstract
         $aliasName = strtolower($name->getFirst());
         if ($name->isQualified() && isset($this->aliases[Stmt\Use_::TYPE_NORMAL][$aliasName])) {
             $alias = $this->aliases[Stmt\Use_::TYPE_NORMAL][$aliasName];
-            return FullyQualified::concat($alias, $name->slice(1), $name->getAttributes());
+            $fqn = FullyQualified::concat($alias, $name->slice(1), $name->getAttributes());
+            $fqn->setAttribute('original_name', $origName);
+
+            return $fqn;
         }
 
         if ($name->isUnqualified()) {
@@ -219,12 +228,18 @@ class NameResolver extends NodeVisitorAbstract
             }
 
             // resolve unqualified aliases
-            return new FullyQualified($this->aliases[$type][$aliasName], $name->getAttributes());
+            $fqn = new FullyQualified($this->aliases[$type][$aliasName], $name->getAttributes());
+            $fqn->setAttribute('original_name', $origName);
+
+            return $fqn;
         }
 
         if (null !== $this->namespace) {
             // if no alias exists prepend current namespace
-            return FullyQualified::concat($this->namespace, $name, $name->getAttributes());
+            $fqn = FullyQualified::concat($this->namespace, $name, $name->getAttributes());
+            $fqn->setAttribute('original_name', $origName);
+
+            return $fqn;
         }
 
         $fqn = new FullyQualified($name->parts, $name->getAttributes());
@@ -238,6 +253,7 @@ class NameResolver extends NodeVisitorAbstract
             $node->namespacedName = Name::concat($this->namespace, $node->name);
         } else {
             $node->namespacedName = new Name($node->name);
+            $node->namespacedName->setLine($node->getLine());
         }
     }
 }

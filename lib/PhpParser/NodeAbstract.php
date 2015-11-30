@@ -89,5 +89,8 @@ abstract class NodeAbstract implements Node, \IteratorAggregate
         foreach ($this->getSubNodeNames() as $prop) {
             yield $prop => $this->{$prop};
         }
+        if (isset($this->{'namespacedName'})) {
+            yield 'namespacedName' => $this->{'namespacedName'};
+        }
     }
 }
