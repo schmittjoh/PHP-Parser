@@ -18,6 +18,8 @@ class NameResolver extends NodeVisitorAbstract
     /** @var array Map of format [aliasType => [aliasName => originalName]] */
     protected $aliases;
 
+    private $anonymousClassesCount = 0;
+
     public function beforeTraverse(array $nodes) {
         $this->resetState();
     }
@@ -42,9 +44,8 @@ class NameResolver extends NodeVisitorAbstract
                 $interface = $this->resolveClassName($interface);
             }
 
-            if (null !== $node->name) {
-                $this->addNamespacedName($node);
-            }
+            $this->addNamespacedName($node);
+
         } elseif ($node instanceof Stmt\Interface_) {
             foreach ($node->extends as &$interface) {
                 $interface = $this->resolveClassName($interface);
@@ -248,12 +249,32 @@ class NameResolver extends NodeVisitorAbstract
         return $fqn;
     }
 
-    protected function addNamespacedName(Node $node) {
-        if (null !== $this->namespace) {
-            $node->namespacedName = Name::concat($this->namespace, $node->name);
+    protected function addNamespacedName(Node $node)
+    {
+        if (null === $node->name) {
+            $nsName = $this->getNameForAnonymousClass($node);
         } else {
-            $node->namespacedName = new Name($node->name);
-            $node->namespacedName->setLine($node->getLine());
+            $nsName = $node->name;
+        }
+        if (null !== $this->namespace) {
+            $node->namespacedName = Name::concat($this->namespace, $nsName);
+        } else {
+            $node->namespacedName = new Name($nsName);
+        }
+
+        $node->namespacedName->setLine($node->getLine());
+    }
+
+    private function getNameForAnonymousClass(\PhpParser\Node $classParent)
+    {
+        while ($classParent = $classParent->getAttribute('parent')) {
+            if ($classParent instanceof \PhpParser\Node\Stmt\Class_ || $classParent instanceof \PhpParser\Node\Stmt\Trait_) {
+                if (!isset($classParent->namespacedName)) {
+                    return $this->getNameForAnonymousClass($classParent) . '$';
+                } else {
+                    return implode("\\", $classParent->namespacedName->parts. $this->anonymousClassesCount++);
+                }
+            }
         }
     }
 }
