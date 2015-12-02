@@ -19,9 +19,15 @@ class NameResolver extends NodeVisitorAbstract
     protected $aliases;
 
     private $anonymousClassesCount = 0;
+    private $filename = 'unnamed-file';
 
     public function beforeTraverse(array $nodes) {
         $this->resetState();
+    }
+
+    public function __construct($name = 'not-passed')
+    {
+        $this->filename = $name;
     }
 
     public function enterNode(Node $node) {
@@ -252,7 +258,7 @@ class NameResolver extends NodeVisitorAbstract
     protected function addNamespacedName(Node $node)
     {
         if (null === $node->name) {
-            $nsName = $this->getNameForAnonymousClass($node);
+            $nsName = $this->getNameForAnonymousClass();
         } else {
             $nsName = $node->name;
         }
@@ -265,16 +271,8 @@ class NameResolver extends NodeVisitorAbstract
         $node->namespacedName->setLine($node->getLine());
     }
 
-    private function getNameForAnonymousClass(\PhpParser\Node $classParent)
+    private function getNameForAnonymousClass()
     {
-        while ($classParent = $classParent->getAttribute('parent')) {
-            if ($classParent instanceof \PhpParser\Node\Stmt\Class_ || $classParent instanceof \PhpParser\Node\Stmt\Trait_) {
-                if (!isset($classParent->namespacedName)) {
-                    return $this->getNameForAnonymousClass($classParent) . '$';
-                } else {
-                    return implode("\\", $classParent->namespacedName->parts. $this->anonymousClassesCount++);
-                }
-            }
-        }
+            return 'anonymous//' . $this->filename . '$' . $this->anonymousClassesCount++;
     }
 }
