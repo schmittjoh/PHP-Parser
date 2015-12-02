@@ -18,8 +18,16 @@ class NameResolver extends NodeVisitorAbstract
     /** @var array Map of format [aliasType => [aliasName => originalName]] */
     protected $aliases;
 
+    private $anonymousClassesCount = 0;
+    private $filename = 'unnamed-file';
+
     public function beforeTraverse(array $nodes) {
         $this->resetState();
+    }
+
+    public function __construct($name = 'not-passed')
+    {
+        $this->filename = $name;
     }
 
     public function enterNode(Node $node) {
@@ -42,9 +50,8 @@ class NameResolver extends NodeVisitorAbstract
                 $interface = $this->resolveClassName($interface);
             }
 
-            if (null !== $node->name) {
-                $this->addNamespacedName($node);
-            }
+            $this->addNamespacedName($node);
+
         } elseif ($node instanceof Stmt\Interface_) {
             foreach ($node->extends as &$interface) {
                 $interface = $this->resolveClassName($interface);
@@ -248,12 +255,24 @@ class NameResolver extends NodeVisitorAbstract
         return $fqn;
     }
 
-    protected function addNamespacedName(Node $node) {
-        if (null !== $this->namespace) {
-            $node->namespacedName = Name::concat($this->namespace, $node->name);
+    protected function addNamespacedName(Node $node)
+    {
+        if (null === $node->name) {
+            $nsName = $this->getNameForAnonymousClass();
         } else {
-            $node->namespacedName = new Name($node->name);
-            $node->namespacedName->setLine($node->getLine());
+            $nsName = $node->name;
         }
+        if (null !== $this->namespace) {
+            $node->namespacedName = Name::concat($this->namespace, $nsName);
+        } else {
+            $node->namespacedName = new Name($nsName);
+        }
+
+        $node->namespacedName->setLine($node->getLine());
+    }
+
+    private function getNameForAnonymousClass()
+    {
+            return 'anonymous//' . $this->filename . '$' . $this->anonymousClassesCount++;
     }
 }
