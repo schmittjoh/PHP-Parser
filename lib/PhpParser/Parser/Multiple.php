@@ -58,6 +58,9 @@ class Multiple implements Parser {
             $stmts = $parser->parse($code);
         } catch (Error $error) {}
         $errors = $parser->getErrors();
+        if (empty($errors) && $error !== null) {
+            $errors[] = $error;
+        }
         return [$stmts, $errors, $error];
     }
 }

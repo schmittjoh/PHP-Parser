@@ -103,6 +103,11 @@ class Lexer
                 continue;
             }
 
+            if ($token[0] === T_SUPER) {
+                $newTokens[] = array(T_STRING, $token[1], $token[2]);
+                continue;
+            }
+
             $newTokens[] = $token;
         }
 
