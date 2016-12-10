@@ -767,6 +767,8 @@ list_expr_elements:
 list_expr_element:
       variable                                              { $$ = $1; }
     | list_expr                                             { $$ = $1; }
+    | expr T_DOUBLE_ARROW variable                          { $$ = $3; }
+    | expr T_DOUBLE_ARROW list_expr                         { $$ = $3; }
     | /* empty */                                           { $$ = null; }
 ;
 
