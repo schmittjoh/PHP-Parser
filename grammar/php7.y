@@ -175,8 +175,13 @@ catches:
     | catches catch                                         { push($1, $2); }
 ;
 
+name_union:
+      name                                                  { $$ = $1; }
+    | name_union '|' name                                   { $$ = $3; }
+;
+
 catch:
-    T_CATCH '(' name T_VARIABLE ')' '{' inner_statement_list '}'
+    T_CATCH '(' name_union T_VARIABLE ')' '{' inner_statement_list '}'
         { $$ = Stmt\Catch_[$3, parseVar($4), $7]; }
 ;
 
